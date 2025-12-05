@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PWM w RUCHU – Pociąg Wypełniony Muzyką</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    :root {
+      --navy: #0A1628;
+      --navy-light: #0D1B2A;
+      --navy-mid: #1E3A5F;
+      --gold: #C9A227;
+      --gold-light: #D4AF37;
+      --burgundy: #9F1239;
+      --white: #ffffff;
+    }
+    
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    body {
+      font-family: 'Playfair Display', Georgia, serif;
+      background-color: var(--navy);
+      color: var(--white);
+      line-height: 1.6;
+    }
+    
+    .sans {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    /* ═══════════════════════════════════════════════════
+       HERO SECTION
+    ═══════════════════════════════════════════════════ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 50%, var(--navy) 100%);
+    }
+    
+    .hero-lines {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      opacity: 0.15;
+    }
+    
+    .hero-line {
+      position: absolute;
+      height: 1px;
+      left: -100%;
+      right: -100%;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      animation: slideRight 4s linear infinite;
+    }
+    
+    @keyframes slideRight {
+      0% { transform: translateX(-50%); }
+      100% { transform: translateX(50%); }
+    }
+    
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 2rem;
+      max-width: 1000px;
+    }
+    
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 1.5rem;
+      border: 1px solid rgba(201, 162, 39, 0.3);
+      border-radius: 50px;
+      background: rgba(201, 162, 39, 0.1);
+      margin-bottom: 2rem;
+    }
+    
+    .badge span {
+      color: var(--gold);
+      font-size: 0.85rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .hero h1 {
+      font-size: clamp(3rem, 10vw, 8rem);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      line-height: 1.1;
+    }
+    
+    .hero h1 .gold { color: var(--gold); }
+    .hero h1 .italic { font-style: italic; }
+    
+    .hero .subtitle {
+      font-size: clamp(1.25rem, 3vw, 2rem);
+      color: rgba(201, 162, 39, 0.8);
+      font-style: italic;
+      margin-bottom: 1.5rem;
+    }
+    
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+    }
+    
+    .hero-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .hero-meta-icon {
+      width: 48px;
+      height: 48px;
+      border: 2px solid var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+    
+    .hero-meta-divider {
+      width: 80px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      display: none;
+    }
+    
+    @media (min-width: 768px) {
+      .hero-meta-divider { display: block; }
+    }
+    
+    .hero-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.7);
+      max-width: 700px;
+      margin: 0 auto 2.5rem;
+    }
+    
+    .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: none;
+    }
+    
+    .btn-primary {
+      background: var(--gold);
+      color: var(--navy);
+    }
+    
+    .btn-primary:hover {
+      background: var(--gold-light);
+      box-shadow: 0 0 40px rgba(201, 162, 39, 0.4);
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      color: var(--gold);
+      border: 2px solid rgba(201, 162, 39, 0.5);
+    }
+    
+    .btn-secondary:hover {
+      background: rgba(201, 162, 39, 0.1);
+      border-color: var(--gold);
+    }
+    
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0.6;
+    }
+    
+    .scroll-indicator span {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .scroll-mouse {
+      width: 24px;
+      height: 40px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      padding-top: 8px;
+    }
+    
+    .scroll-dot {
+      width: 4px;
+      height: 8px;
+      background: var(--gold);
+      border-radius: 2px;
+      animation: bounce 1.5s infinite;
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(6px); }
+    }
+    
+    /* ═══════════════════════════════════════════════════
+       SECTION COMMON
+    ═══════════════════════════════════════════════════ */
+    section {
+      padding: 6rem 1.5rem;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .section-label {
+      color: var(--gold);
+      font-size: 0.85rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      font-family: 'Inter', sans-serif;
+      margin-bottom: 1rem;
+      display: block;
+      text-align: center;
+    }
+    
+    .section-title {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    
+    .section-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.7);
+      max-width: 700px;
+      margin: 0 auto 3rem;
+      text-align: center;
+    }
+    
+    /* ═══════════════════════════════════════════════════
+       ROUTE SECTION
+    ═══════════════════════════════════════════════════ */
+    .route-section {
+      background: var(--navy-light);
+      position: relative;
+    }
+    
+    .route-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0.3;
+    }
+    
+    .route-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin-bottom: 4rem;
+      position: relative;
+    }
+    
+    @media (min-width: 768px) {
+      .route-timeline {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+      
+      .route-timeline::before {
+        content: '';
+        position: absolute;
+        top: 32px;
+        left: 5%;
+        right: 5%;
+        height: 3px;
+        background: linear-gradient(90deg, var(--gold), rgba(201, 162, 39, 0.3), var(--gold));
+        z-index: 0;
+      }
+    }
+    
+    .route-stop {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .route-stop-circle {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+    }
+    
+    .route-stop-circle.start {
+      background: var(--gold);
+      color: var(--navy);
+    }
+    
+    .route-stop-circle.middle {
+      background: var(--navy-mid);
+      border: 2px solid rgba(201, 162, 39, 0.5);
+      color: var(--white);
+    }
+    
+    .route-stop-circle.end {
+      background: var(--burgundy);
+      color: var(--white);
+    }
+    
+    .route-stop-city {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    
+    .route-stop-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    
+    .route-stop-label.gold { color: var(--gold); }
+    .route-stop-label.burgundy { color: var(--burgundy); }
+    
+    /* ═══════════════════════════════════════════════════
+       WAGONS
+    ═══════════════════════════════════════════════════ */
+    .wagons-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+    
+    .wagons-desc {
+      font-family: 'Inter', sans-serif;
+      color: rgba(255, 255, 255, 0.6);
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .wagons-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 4rem;
+    }
+    
+    @media (min-width: 768px) {
+      .wagons-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .wagons-grid {
+        grid-template-columns: repeat(6, 1fr);
+      }
+    }
+    
+    .wagon-card {
+      padding: 1.25rem;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-left: 4px solid;
+    }
+    
+    .wagon-card:hover {
+      transform: translateY(-4px);
+    }
+    
+    .wagon-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0.6;
+      font-family: 'Inter', sans-serif;
+      margin-bottom: 0.5rem;
+    }
+    
+    .wagon-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+    
+    .wagon-desc {
+      font-size: 0.85rem;
+      font-family: 'Inter', sans-serif;
+      opacity: 0.9;
+      margin-top: 0.75rem;
+      display: none;
+    }
+    
+    .wagon-card.active .wagon-desc {
+      display: block;
+    }
+    
+    /* ═══════════════════════════════════════════════════
+       CONCERTS BOX
+    ═══════════════════════════════════════════════════ */
+    .concerts-box {
+      background: rgba(30, 58, 95, 0.3);
+      border: 1px solid rgba(201, 162, 39, 0.2);
+      border-radius: 2px;
+      padding: 2rem;
+    }
+    
+    .concerts-box h3 {
+      font-size: 1.75rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .concerts-box h3 .gold { color: var(--gold); }
+    
+    .concerts-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+    
+    @media (min-width: 768px) {
+      .concerts-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    .concert-item h4 {
+      color: var(--gold);
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .concert-item p {
+      font-family: 'Inter', sans-serif;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .concerts-footer {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(201, 162, 39, 0.2);
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .concerts-footer strong {
+      color: var(--gold);
+    }
+    
+    /* ═══════════════════════════════════════════════════
+       PWM SECTION
+    ═══════════════════════════════════════════════════ */
+    .pwm-section {
+      background: linear-gradient(180deg, var(--navy-light) 0%, var(--navy) 100%);
+    }
+    
+    .pwm-grid {
+      display: grid;
+      gap: 4rem;
+      align-items: center;
+    }
+    
+    @media (min-width: 1024px) {
+      .pwm-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    
+    .pwm-content .badge {
+      margin-bottom: 1.5rem;
+    }
+    
+    .pwm-content h2 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    
+    .pwm-80 {
+      font-size: 6rem;
+      font-weight: 700;
+      color: rgba(201, 162, 39, 0.15);
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+    
+    .pwm-content p {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 2rem;
+      line-height: 1.8;
+    }
+    
+    .pwm-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 2rem;
+      background: transparent;
+      border: 2px solid var(--gold);
+      color: var(--gold);
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    
+    .pwm-cta:hover {
+      background: var(--gold);
+      color: var(--navy);
+    }
+    
+    .pwm-cta:hover .arrow {
+      transform: translateX(4px);
+    }
+    
+    .pwm-cta .arrow {
+      transition: transform 0.3s ease;
+    }
+    
+    .pwm-cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    
+    .pwm-card {
+      padding: 1.5rem;
+      background: rgba(30, 58, 95, 0.2);
+      border: 1px solid rgba(201, 162, 39, 0.1);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    
+    .pwm-card:hover {
+      border-color: rgba(201, 162, 39, 0.3);
+    }
+    
+    .pwm-card-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    
+    .pwm-card h4 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    
+    .pwm-card p {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.6);
+      margin: 0;
+    }
+    
+    /* ═══════════════════════════════════════════════════
+       RADIO SECTION
+    ═══════════════════════════════════════════════════ */
+    .radio-section {
+      background: var(--burgundy);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .radio-waves {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.1;
+    }
+    
+    .radio-wave {
+      position: absolute;
+      border: 1px solid white;
+      border-radius: 50%;
+      animation: wave 3s ease-out infinite;
+    }
+    
+    @keyframes wave {
+      0% { opacity: 0.5; transform: scale(1); }
+      100% { opacity: 0; transform: scale(2); }
+    }
+    
+    .radio-content {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    
+    .radio-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50px;
+      margin-bottom: 1.5rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+    }
+    
+    .radio-content h2 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+    
+    .radio-content > p {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 2rem;
+    }
+    
+    .radio-content strong {
+      color: white;
+    }
+    
+    .radio-box {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+      border-radius: 2px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .radio-box h3 {
+      font-size: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .radio-perks {
+      display: grid;
+      gap: 1.5rem;
+    }
+    
+    @media (min-width: 768px) {
+      .radio-perks {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    
+    .radio-perk {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .radio-perk-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+    }
+    
+    .radio-perk span {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+    }
+    
+    .radio-footer {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+    
+    /* ═══════════════════════════════════════════════════
+       CONCERT SECTION
+    ═══════════════════════════════════════════════════ */
+    .concert-section {
+      background: var(--navy);
+      position: relative;
+    }
+    
+    .concert-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 200px;
+      background: linear-gradient(180deg, rgba(159, 18, 57, 0.1) 0%, transparent 100%);
+    }
+    
+    .concert-grid {
+      display: grid;
+      gap: 4rem;
+      position: relative;
+      z-index: 1;
+    }
+    
+    @media (min-width: 1024px) {
+      .concert-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    
+    .concert-info .section-label {
+      text-align: left;
+    }
+    
+    .concert-info h2 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    
+    .concert-info h2 .gold {
+      color: var(--gold);
+      font-style: italic;
+    }
+    
+    .concert-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      font-size: 1rem;
+    }
+    
+    .concert-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .concert-meta-item .icon {
+      color: var(--gold);
+    }
+    
+    .concert-info > p {
+      font-family: 'Inter', sans-serif;
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+    
+    .concert-info strong {
+      color: white;
+    }
+    
+    .concert-quote {
+      padding: 1.5rem;
+      background: rgba(30, 58, 95, 0.3);
+      border-left: 4px solid var(--gold);
+      border-radius: 0 2px 2px 0;
+    }
+    
+    .concert-quote p {
+      font-family: 'Inter', sans-serif;
+      font-style: italic;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    
+    /* ═══════════════════════════════════════════════════
+       FORM
+    ═══════════════════════════════════════════════════ */
+    .form-box {
+      background: linear-gradient(135deg, rgba(30, 58, 95, 0.4) 0%, var(--navy-light) 100%);
+      padding: 2.5rem;
+      border-radius: 2px;
+      border: 1px solid rgba(201, 162, 39, 0.2);
+    }
+    
+    .form-box h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    
+    .form-box > p {
+      font-family: 'Inter', sans-serif;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 2rem;
+    }
+    
+    .form-row {
+      display: grid;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    @media (min-width: 640px) {
+      .form-row.two-col {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    
+    .form-group label {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 0.5rem;
+    }
+    
+    .form-group input[type="text"],
+    .form-group input[type="email"] {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      background: var(--navy);
+      border: 1px solid rgba(201, 162, 39, 0.3);
+      border-radius: 2px;
+      color: white;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+    
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+    
+    .form-checkbox {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-checkbox input {
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      accent-color: var(--gold);
+    }
+    
+    .form-checkbox label {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .form-checkbox a {
+      color: var(--gold);
+      text-decoration: none;
+    }
+    
+    .form-checkbox a:hover {
+      text-decoration: underline;
+    }
+    
+    .form-submit {
+      width: 100%;
+      padding: 1rem;
+      background: var(--gold);
+      color: var(--navy);
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      border: none;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    
+    .form-submit:hover {
+      background: var(--gold-light);
+    }
+    
+    .form-footer {
+      margin-top: 1.5rem;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.4);
+    }
+    
+    .form-success {
+      text-align: center;
+      padding: 3rem 1rem;
+      display: none;
+    }
+    
+    .form-success.show {
+      display: block;
+    }
+    
+    .form-success-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1.5rem;
+      background: rgba(201, 162, 39, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: var(--gold);
+    }
+    
+    .form-success h4 {
+      font-size: 1.5rem;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+    }
+    
+    .form-success p {
+      font-family: 'Inter', sans-serif;
+      color: rgba(255, 255, 255, 0.7);
+    }
+    
+    #ticketForm.hidden {
+      display: none;
+    }
+    
+    /* ═══════════════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════════════ */
+    footer {
+      background: #050D18;
+      padding: 4rem 1.5rem;
+      border-top: 1px solid rgba(201, 162, 39, 0.1);
+    }
+    
+    .footer-logos {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 3rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .footer-logo {
+      text-align: center;
+    }
+    
+    .footer-logo-box {
+      width: 100px;
+      height: 64px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.5rem;
+    }
+    
+    .footer-logo-box span {
+      font-weight: 700;
+    }
+    
+    .footer-logo p {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.4);
+    }
+    
+    .footer-funding {
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 2rem;
+    }
+    
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .footer-links a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    
+    .footer-links a:hover {
+      color: var(--gold);
+    }
+    
+    .footer-links span {
+      color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .footer-copyright {
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       MODUŁ 1: HERO BANNER
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-lines">
+      <div class="hero-line" style="top: 10%; animation-delay: 0s;"></div>
+      <div class="hero-line" style="top: 25%; animation-delay: 0.5s;"></div>
+      <div class="hero-line" style="top: 40%; animation-delay: 1s;"></div>
+      <div class="hero-line" style="top: 55%; animation-delay: 1.5s;"></div>
+      <div class="hero-line" style="top: 70%; animation-delay: 2s;"></div>
+      <div class="hero-line" style="top: 85%; animation-delay: 2.5s;"></div>
+    </div>
+    
+    <div class="hero-content">
+      <div class="badge">
+        <span>Jubileusz 80-lecia PWM</span>
+      </div>
+      
+      <h1>
+        <span class="gold">PWM</span> w <span class="italic">RUCHU</span>
+      </h1>
+      
+      <p class="subtitle">Pociąg Wypełniony Muzyką</p>
+      
+      <div class="hero-meta">
+        <div class="hero-meta-item">
+          <div class="hero-meta-icon">🗓</div>
+          <span>21 grudnia 2025</span>
+        </div>
+        <div class="hero-meta-divider"></div>
+        <div class="hero-meta-item">
+          <div class="hero-meta-icon">🚂</div>
+          <span>Kraków → Gdańsk</span>
+        </div>
+      </div>
+      
+      <p class="hero-desc">
+        Koncerty, spotkania, warsztaty i muzyczne atrakcje. Mobilna scena sztuki 
+        przygotowana przez PWM we współpracy z Programem 2 Polskiego Radia.
+      </p>
+      
+      <div class="hero-buttons">
+        <a href="#bilety-radio" class="btn btn-primary">Zdobądź bilety na przejazd</a>
+        <a href="#koncert" class="btn btn-secondary">Wejściówki na koncert</a>
+      </div>
+    </div>
+    
+    <div class="scroll-indicator">
+      <span>Odkryj więcej</span>
+      <div class="scroll-mouse">
+        <div class="scroll-dot"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       MODUŁ 2: INFO O AKCJI
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="route-section" id="akcja">
+    <div class="container">
+      <span class="section-label">21 grudnia 2025</span>
+      <h2 class="section-title">Wyjątkowy przejazd</h2>
+      <p class="section-desc">
+        Całodniowa, mobilna celebracja jubileuszu 80-lecia Polskiego Wydawnictwa Muzycznego, 
+        realizowana wspólnie z Programem 2 Polskiego Radia.
+      </p>
+      
+      <!-- Trasa -->
+      <div class="route-timeline">
+        <div class="route-stop">
+          <div class="route-stop-circle start">8:41</div>
+          <div class="route-stop-city">Kraków Główny</div>
+          <div class="route-stop-label gold">START</div>
+        </div>
+        <div class="route-stop">
+          <div class="route-stop-circle middle">—</div>
+          <div class="route-stop-city">Łódź</div>
+        </div>
+        <div class="route-stop">
+          <div class="route-stop-circle middle">—</div>
+          <div class="route-stop-city">Warszawa</div>
+        </div>
+        <div class="route-stop">
+          <div class="route-stop-circle middle">—</div>
+          <div class="route-stop-city">Malbork</div>
+        </div>
+        <div class="route-stop">
+          <div class="route-stop-circle end">17:37</div>
+          <div class="route-stop-city">Gdańsk</div>
+          <div class="route-stop-label burgundy">FINAŁ</div>
+        </div>
+      </div>
+      
+      <!-- Wagony -->
+      <h3 class="wagons-title">Wagony tematyczne</h3>
+      <p class="wagons-desc">Każdy wagon otrzymał patrona – jednego z mistrzów polskiej muzyki</p>
+      
+      <div class="wagons-grid">
+        <div class="wagon-card" style="background: rgba(201, 162, 39, 0.2); border-color: #C9A227;" onclick="toggleWagon(this)">
+          <div class="wagon-label">Wagon</div>
+          <div class="wagon-name">Chopin</div>
+          <div class="wagon-desc">Przestrzeń dla pasażerów, czytelnia, odsłuchy muzyczne</div>
+        </div>
+        <div class="wagon-card" style="background: rgba(139, 69, 19, 0.2); border-color: #8B4513;" onclick="toggleWagon(this)">
+          <div class="wagon-label">Wagon</div>
+          <div class="wagon-name">Wieniawski</div>
+          <div class="wagon-desc">Specjalne menu podróżne i degustacje muzyczne – Mateusz Gessler</div>
+        </div>
+        <div class="wagon-card" style="background: rgba(74, 85, 104, 0.2); border-color: #4A5568;" onclick="toggleWagon(this)">
+          <div class="wagon-label">Wagon</div>
+          <div class="wagon-name">Szymanowski</div>
+          <div class="wagon-desc">Spotkania autorskie, Kluboksięgarnia UNA</div>
+        </div>
+        <div class="wagon-card" style="background: rgba(159, 18, 57, 0.2); border-color: #9F1239;" onclick="toggleWagon(this)">
+          <div class="wagon-label">Wagon</div>
+          <div class="wagon-name">Bacewicz</div>
+          <div class="wagon-desc">Aktywności PWM, studio Dwójki, fotobudka, muzyczna poczta</div>
+        </div>
+        <div class="wagon-card" style="background: rgba(30, 58, 95, 0.2); border-color: #1E3A5F;" onclick="toggleWagon(this)">
+          <div class="wagon-label">Wagon</div>
+          <div class="wagon-name">Lutosławski</div>
+          <div class="wagon-desc">Scena koncertowa i DJ-ska</div>
+        </div>
+        <div class="wagon-card" style="background: rgba(55, 65, 81, 0.2); border-color: #374151;" onclick="toggleWagon(this)">
+          <div class="wagon-label">Wagon</div>
+          <div class="wagon-name">Kilar</div>
+          <div class="wagon-desc">Zaplecze dla artystów</div>
+        </div>
+      </div>
+      
+      <!-- Koncerty -->
+      <div class="concerts-box">
+        <h3><span class="gold">♪</span> Koncerty na pokładzie</h3>
+        <div class="concerts-grid">
+          <div class="concert-item">
+            <h4>Kraków → Warszawa</h4>
+            <p>Kwartet Śląski, Maciej Frąckiewicz, Bartłomiej Duś i Magdalena Duś, Joanna Freszel i Bartłomiej Kominek</p>
+          </div>
+          <div class="concert-item">
+            <h4>Łódź → Warszawa</h4>
+            <p>Royal String Quartet</p>
+          </div>
+          <div class="concert-item">
+            <h4>Warszawa → Gdańsk</h4>
+            <p>Mateusz Kowalski, Ania Karpowicz, Adam Strug, Agata Szymczewska i Wojciech Szymczewski, proModern</p>
+          </div>
+          <div class="concert-item">
+            <h4>Przez cały dzień</h4>
+            <p>Sety DJ-skie – DJ Skalpel i HCH tworzący muzyczny pomost między występami</p>
+          </div>
+        </div>
+        <div class="concerts-footer">
+          <strong>Na peronach:</strong> Motion Trio oraz Tubicinatores Gedanenses
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       MODUŁ 3: INFO O PWM
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="pwm-section" id="pwm">
+    <div class="container">
+      <div class="pwm-grid">
+        <div class="pwm-content">
+          <div class="badge">
+            <span>Od 1945 roku</span>
+          </div>
+          <h2>Polskie Wydawnictwo Muzyczne</h2>
+          <div class="pwm-80">80</div>
+          <p>
+            Jedna z najważniejszych instytucji muzycznych w Polsce. Specjalizujemy się w publikacji 
+            materiałów nutowych, książek o muzyce klasycznej, jazzowej i filmowej oraz materiałów edukacyjnych.
+          </p>
+          <a href="https://pwm.sklep.pl/" target="_blank" rel="noopener" class="pwm-cta">
+            <span>Nuty na wynos</span>
+            <span class="arrow">→</span>
+          </a>
+        </div>
+        
+        <div class="pwm-cards">
+          <div class="pwm-card">
+            <div class="pwm-card-icon">📚</div>
+            <h4>Publikacje</h4>
+            <p>Nuty i książki – od muzyki dawnej po współczesną</p>
+          </div>
+          <div class="pwm-card">
+            <div class="pwm-card-icon">🎓</div>
+            <h4>Edukacja</h4>
+            <p>Materiały dydaktyczne i Dzień Edukacji Muzycznej</p>
+          </div>
+          <div class="pwm-card">
+            <div class="pwm-card-icon">🏛</div>
+            <h4>Archiwum</h4>
+            <p>Polska Biblioteka Muzyczna – unikatowe zasoby</p>
+          </div>
+          <div class="pwm-card">
+            <div class="pwm-card-icon">💿</div>
+            <h4>ANAKLASIS</h4>
+            <p>Nowoczesna marka fonograficzna PWM</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       MODUŁ 4: BILETY NA PRZEJAZD (RADIO)
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="radio-section" id="bilety-radio">
+    <div class="radio-waves">
+      <div class="radio-wave" style="width: 200px; height: 200px; animation-delay: 0s;"></div>
+      <div class="radio-wave" style="width: 350px; height: 350px; animation-delay: 0.5s;"></div>
+      <div class="radio-wave" style="width: 500px; height: 500px; animation-delay: 1s;"></div>
+      <div class="radio-wave" style="width: 650px; height: 650px; animation-delay: 1.5s;"></div>
+    </div>
+    
+    <div class="radio-content">
+      <div class="radio-badge">
+        <span>📻</span>
+        <span>Program 2 Polskiego Radia</span>
+      </div>
+      
+      <h2>Zdobądź bilety na przejazd</h2>
+      
+      <p>
+        Słuchaj programów <strong>„Poranek Dwójki"</strong> oraz <strong>„Wybieram Dwójkę"</strong> 
+        od 11 grudnia – na słuchaczy czekają specjalne zaproszenia!
+      </p>
+      
+      <div class="radio-box">
+        <h3>Co obejmuje pakiet dla słuchaczy?</h3>
+        <div class="radio-perks">
+          <div class="radio-perk">
+            <div class="radio-perk-icon">🚂</div>
+            <span>Przejazd pociągiem Kraków–Gdańsk</span>
+          </div>
+          <div class="radio-perk">
+            <div class="radio-perk-icon">🏨</div>
+            <span>Nocleg w Hotelu Arche Dwór Uphagena</span>
+          </div>
+          <div class="radio-perk">
+            <div class="radio-perk-icon">🎫</div>
+            <span>Bilety na koncert dla dwóch osób</span>
+          </div>
+        </div>
+      </div>
+      
+      <p class="radio-footer">
+        Na antenie Dwójki: transmisja koncertu finałowego, relacje z podróży i rozmowy z artystami
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       MODUŁ 5: KONCERT FINAŁOWY + FORMULARZ
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="concert-section" id="koncert">
+    <div class="container">
+      <div class="concert-grid">
+        <div class="concert-info">
+          <span class="section-label">Wielki Finał</span>
+          <h2>Koncert <span class="gold">„Laeta Mundus"</span></h2>
+          
+          <div class="concert-meta">
+            <div class="concert-meta-item">
+              <span class="icon">📍</span>
+              <span>Centrum św. Jana, Gdańsk</span>
+            </div>
+            <div class="concert-meta-item">
+              <span class="icon">🕐</span>
+              <span>21 grudnia 2025, godz. 20:00</span>
+            </div>
+          </div>
+          
+          <p>
+            W historycznych murach Centrum św. Jana odbędzie się prezentacja albumu „Laeta Mundus" 
+            z serii ANAKLASIS. Na scenie wystąpią artyści łączący światy, epoki i wrażliwości: 
+            <strong>Ensemble Peregrina</strong>, <strong>Adam Bałdych</strong> oraz 
+            <strong>Michał Górczyński</strong>.
+          </p>
+          
+          <div class="concert-quote">
+            <p>
+              „To wieczór, który pozwoli zanurzyć się w muzyce pełnej światła, emocji i wyrafinowanego piękna – 
+              wspólnie zakończmy tę niezwykłą podróż."
+            </p>
+          </div>
+        </div>
+        
+        <div class="form-box">
+          <h3>Zdobądź bezpłatne wejściówki</h3>
+          <p>Liczba miejsc ograniczona. Bilety wyślemy na Twój adres e-mail.</p>
+          
+          <form id="ticketForm">
+            <div class="form-row two-col">
+              <div class="form-group">
+                <label for="imie">Imię</label>
+                <input type="text" id="imie" name="imie" required>
+              </div>
+              <div class="form-group">
+                <label for="nazwisko">Nazwisko</label>
+                <input type="text" id="nazwisko" name="nazwisko" required>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="email">Adres e-mail</label>
+                <input type="email" id="email" name="email" required>
+              </div>
+            </div>
+            
+            <div class="form-checkbox">
+              <input type="checkbox" id="consent" required>
+              <label for="consent">
+                Akceptuję <a href="#regulamin">regulamin</a> i wyrażam zgodę na przetwarzanie 
+                danych osobowych w celu otrzymania wejściówek.
+              </label>
+            </div>
+            
+            <button type="submit" class="form-submit">Pobieram bilety na koncert</button>
+          </form>
+          
+          <div class="form-success" id="formSuccess">
+            <div class="form-success-icon">✓</div>
+            <h4>Dziękujemy!</h4>
+            <p>Bilety zostaną przesłane na podany adres e-mail.</p>
+          </div>
+          
+          <p class="form-footer">
+            Bilety dostępne także w social mediach PWM, Polityki i na antenie Dwójki
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       MODUŁ 6: STOPKA
+  ═══════════════════════════════════════════════════════════ -->
+  <footer id="regulamin">
+    <div class="container">
+      <div class="footer-logos">
+        <div class="footer-logo">
+          <div class="footer-logo-box">
+            <span style="color: #C9A227; font-size: 1.5rem;">PWM</span>
+          </div>
+          <p>Organizator</p>
+        </div>
+        <div class="footer-logo">
+          <div class="footer-logo-box">
+            <span>📻 PR2</span>
+          </div>
+          <p>Partner medialny</p>
+        </div>
+        <div class="footer-logo">
+          <div class="footer-logo-box">
+            <span style="font-size: 0.7rem; text-align: center; padding: 0.5rem;">Ministerstwo Kultury</span>
+          </div>
+          <p>Dofinansowanie</p>
+        </div>
+      </div>
+      
+      <p class="footer-funding">
+        Wydarzenie dofinansowane ze środków Ministerstwa Kultury i Dziedzictwa Narodowego
+      </p>
+      
+      <div class="footer-links">
+        <a href="#">Regulamin akcji</a>
+        <span>|</span>
+        <a href="#">Polityka prywatności</a>
+        <span>|</span>
+        <a href="https://pwm.com.pl" target="_blank" rel="noopener">pwm.com.pl</a>
+      </div>
+      
+      <p class="footer-copyright">
+        © 2025 Polskie Wydawnictwo Muzyczne. Wszelkie prawa zastrzeżone.
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // Toggle wagon description
+    function toggleWagon(el) {
+      document.querySelectorAll('.wagon-card').forEach(card => {
+        if (card !== el) card.classList.remove('active');
+      });
+      el.classList.toggle('active');
+    }
+    
+    // Form submission
+    document.getElementById('ticketForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Hide form, show success
+      this.classList.add('hidden');
+      document.getElementById('formSuccess').classList.add('show');
+      
+      // Here you would normally send data to server
+      // For demo, we just show success message
+    });
+  </script>
+
+</body>
+</html>
