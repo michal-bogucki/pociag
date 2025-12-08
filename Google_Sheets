@@ -1,0 +1,136 @@
+# Instrukcja konfiguracji formularza Google Sheets
+
+## Krok 1: Utwórz arkusz Google
+
+1. Wejdź na https://sheets.google.com
+2. Utwórz nowy arkusz
+3. Nazwij go np. "PWM Bilety Koncert"
+4. W pierwszym wierszu wpisz nagłówki kolumn:
+
+```
+A1: Timestamp
+B1: Imię
+C1: Nazwisko
+D1: Email
+E1: Telefon
+F1: Liczba biletów
+G1: Zgoda dane
+H1: Zgoda regulamin
+```
+
+---
+
+## Krok 2: Dodaj Google Apps Script
+
+1. W arkuszu kliknij **Rozszerzenia → Apps Script**
+2. Usuń cały kod w edytorze
+3. Wklej poniższy kod:
+
+```javascript
+function doPost(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var data = JSON.parse(e.postData.contents);
+    
+    sheet.appendRow([
+      data.timestamp,
+      data.imie,
+      data.nazwisko,
+      data.email,
+      data.telefon,
+      data.liczba_biletow,
+      data.zgoda_dane,
+      data.zgoda_regulamin
+    ]);
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({status: 'success'}))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+  } catch(error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({status: 'error', message: error.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  return ContentService.createTextOutput("Formularz PWM działa!");
+}
+```
+
+4. Kliknij **Ctrl+S** aby zapisać
+5. Nazwij projekt np. "PWM Formularz"
+
+---
+
+## Krok 3: Wdróż jako aplikację webową
+
+1. Kliknij **Wdróż → Nowe wdrożenie**
+2. Kliknij ikonę ⚙️ i wybierz **Aplikacja internetowa**
+3. Ustaw:
+   - **Opis**: "Formularz bilety"
+   - **Wykonaj jako**: "Ja"
+   - **Kto ma dostęp**: "Każdy"
+4. Kliknij **Wdróż**
+5. Kliknij **Autoryzuj dostęp** i zaakceptuj uprawnienia
+6. **SKOPIUJ URL** który się pojawi (wygląda tak):
+   ```
+   https://script.google.com/macros/s/AKfycbx.../exec
+   ```
+
+---
+
+## Krok 4: Wklej URL do index.html
+
+1. Otwórz `index.html`
+2. Znajdź linię (około linii 1445):
+   ```javascript
+   const GOOGLE_SCRIPT_URL = 'TUTAJ_WKLEJ_URL_Z_GOOGLE_APPS_SCRIPT';
+   ```
+3. Zamień na skopiowany URL:
+   ```javascript
+   const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx.../exec';
+   ```
+
+---
+
+## Krok 5: Testuj!
+
+1. Otwórz stronę w przeglądarce
+2. Wypełnij formularz
+3. Sprawdź czy dane pojawiły się w arkuszu Google
+
+---
+
+## Troubleshooting
+
+### Dane nie pojawiają się w arkuszu?
+- Sprawdź czy URL jest poprawnie wklejony
+- Sprawdź konsolę przeglądarki (F12 → Console)
+- Upewnij się, że wdrożenie jest ustawione na "Każdy"
+
+### Błąd autoryzacji?
+- Wejdź w Apps Script → Wdróż → Zarządzaj wdrożeniami
+- Utwórz nowe wdrożenie z nowymi uprawnieniami
+
+### Chcesz dodać powiadomienia e-mail?
+Dodaj to na końcu funkcji `doPost`:
+```javascript
+MailApp.sendEmail({
+  to: "twoj@email.pl",
+  subject: "Nowe zgłoszenie - PWM bilety",
+  body: "Nowe zgłoszenie od: " + data.imie + " " + data.nazwisko + "\nEmail: " + data.email
+});
+```
+
+---
+
+## Gotowe!
+
+Teraz każde zgłoszenie z formularza automatycznie trafia do Twojego arkusza Google Sheets.
+Możesz:
+- Filtrować dane
+- Eksportować do CSV/Excel
+- Udostępniać zespołowi
+- Tworzyć wykresy i raporty
