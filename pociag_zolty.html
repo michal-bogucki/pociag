@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PWM w RUCHU – Pociąg Wypełniony Muzyką</title>
+  <meta name="description" content="21 grudnia 2025 – muzyczna podróż z Krakowa do Gdańska. Koncerty, spotkania, warsztaty i wiele innych atrakcji.">
+  
+  <!-- Fonty: Oswald (zamiennik BC Barell) + Inter (zamiennik Neue Haas Grotesk) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ═══════════════════════════════════════════════════════════════
+       RESET & VARIABLES
+    ═══════════════════════════════════════════════════════════════ */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    :root {
+      /* Kolory z InDesign */
+      --yellow: #FFD700;
+      --yellow-hover: #E6C200;
+      --gray-light: #EDEDED;
+      --gray-mid: #B4B4B4;
+      --gray-hover: #D7D7D7;
+      --black: #000000;
+      --white: #FFFFFF;
+      
+      /* Spacing */
+      --passe-partout: 24px;
+      --section-padding: 72px;
+      --border-radius: 24px;
+      --gap: 24px;
+      
+      /* Typography */
+      --font-display: 'Oswald', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      
+      --text-base: 18px;
+      --line-base: 24px;
+      --text-h1: 28px;
+      --line-h1: 34px;
+      --text-lead: 18px;
+      --line-lead: 24px;
+    }
+    
+    @media (max-width: 768px) {
+      :root {
+        --passe-partout: 16px;
+        --section-padding: 48px;
+        --text-base: 16px;
+        --line-base: 24px;
+      }
+    }
+    
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    body {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: var(--line-base);
+      background-color: var(--yellow);
+      color: var(--black);
+      padding: var(--passe-partout);
+      min-height: 100vh;
+    }
+    
+    /* ═══════════════════════════════════════════════════════════════
+       TYPOGRAPHY
+    ═══════════════════════════════════════════════════════════════ */
+    h1, h2, h3, .display {
+      font-family: var(--font-display);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+    
+    h1 {
+      font-size: clamp(40px, 10vw, 56px);
+      line-height: 0.95;
+    }
+    
+    h2 {
+      font-size: var(--text-h1);
+      line-height: var(--line-h1);
+      margin-bottom: 16px;
+    }
+    
+    h3 {
+      font-size: 20px;
+      line-height: 26px;
+      margin-bottom: 12px;
+    }
+    
+    p {
+      margin-bottom: calc(var(--line-base) / 2);
+    }
+    
+    p:last-child {
+      margin-bottom: 0;
+    }
+    
+    strong {
+      font-weight: 700;
+    }
+    
+    a {
+      color: var(--black);
+      text-decoration: underline;
+    }
+    
+    a:hover {
+      text-decoration: none;
+    }
+    
+    .lead {
+      font-size: 20px;
+      line-height: 28px;
+      font-weight: 400;
+    }
+    
+    /* ═══════════════════════════════════════════════════════════════
+       LAYOUT
+    ═══════════════════════════════════════════════════════════════ */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .section {
+      background: var(--gray-light);
+      border-radius: var(--border-radius);
+      padding: var(--section-padding) var(--gap);
+      margin-bottom: var(--gap);
+    }
+    
+    .section-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    
+    .grid {
+      display: grid;
+      gap: var(--gap);
+    }
+    
+    .grid-2 {
+      grid-template-columns: 1fr;
+    }
+    
+    @media (min-width: 768px) {
+      .grid-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    
+    .content-block {
+      margin-bottom: 48px;
+    }
+    
+    .content-block:last-child {
+      margin-bottom: 0;
+    }
+    
+    /* ═══════════════════════════════════════════════════════════════
+       HEADER - dwukolorowy układ: biały góra (pociąg) + żółty dół (treść)
+    ═══════════════════════════════════════════════════════════════ */
+    .header {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      margin-bottom: var(--gap);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+    }
+    
+    /* Biała górna część z pociągiem */
+    .header-white {
+      background: var(--white);
+      position: relative;
+      min-height: 300px;
+      padding: var(--gap);
+      border-radius: var(--border-radius) var(--border-radius) 0 0;
+    }
+    
+    @media (min-width: 768px) {
+      .header-white {
+        min-height: 400px;
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .header-white {
+        min-height: 500px;
+      }
+    }
+    
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      position: relative;
+      z-index: 10;
+    }
+    
+    .hamburger {
+      width: 32px;
+      height: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+    
+    .hamburger span {
+      display: block;
+      width: 100%;
+      height: 2px;
+      background: var(--black);
+      transition: all 0.3s ease;
+    }
+    
+    .header-logos {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+    }
+    
+    .logo-pwm {
+      height: 40px;
+      width: auto;
+    }
+    
+    .logo-80 {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1;
+      text-align: right;
+    }
+    
+    .logo-80 small {
+      font-size: 12px;
+      font-weight: 400;
+      display: block;
+    }
+    
+    /* Pociąg - w białej części */
+    .header-train {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 90%;
+      max-width: 900px;
+      z-index: 1;
+      pointer-events: none;
+    }
+    
+    .header-train img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    
+    @media (min-width: 768px) {
+      .header-train {
+        width: 75%;
+        right: -5%;
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .header-train {
+        width: 65%;
+        right: 0;
+      }
+    }
+    
+    /* Żółta dolna część z treścią */
+    .header-yellow {
+      background: var(--yellow);
+      padding: var(--section-padding) var(--gap);
+      position: relative;
+      z-index: 5;
+      border-radius: 0 0 var(--border-radius) var(--border-radius);
+    }
+    
+    .header-content {
+      max-width: 700px;
+    }
+    
+    .header-title {
+      margin-bottom: 32px;
+    }
+    
+    .header-title h1 {
+      font-size: clamp(40px, 10vw, 56px);
+      line-height: 0.95;
+      font-weight: 700;
+    }
+    
+    /* Linie dekoracyjne przy tytule */
+    .title-line {
+      display: block;
+      height: 2px;
+      background: var(--black);
+      margin: 8px 0;
+    }
+    
+    .title-line-top {
+      width: 100px;
+    }
+    
+    .title-line-bottom {
+      width: 180px;
+    }
+    
+    @media (min-width: 768px) {
+      .title-line-top { width: 140px; }
+      .title-line-bottom { width: 260px; }
+    }
+    
+    /* Moduł DATA/TRASA */
+    .header-meta {
+      font-family: var(--font-display);
+      font-size: 18px;
+      line-height: 24px;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+      max-width: 600px;
+    }
+    
+    .meta-row {
+      display: flex;
+      gap: 16px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--black);
+    }
+    
+    .meta-row:first-child {
+      border-top: 1px solid var(--black);
+    }
+    
+    .meta-label {
+      min-width: 70px;
+      font-weight: 400;
+    }
+    
+    .meta-value {
+      flex: 1;
+      font-weight: 700;
+    }
+    
+    /* Rozciągnięte myślniki w trasie */
+    .meta-value .dash {
+      display: inline-block;
+      transform: scaleX(2);
+      margin: 0 4px;
+    }
+    
+    .header-intro {
+      max-width: 550px;
+    }
+    
+    .header-intro p {
+      font-size: var(--text-base);
+      line-height: var(--line-base);
+    }
+    
+    .header-cta {
+      margin-top: 32px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    
+    /* ═══════════════════════════════════════════════════════════════
+       BUTTONS
+    ═══════════════════════════════════════════════════════════════ */
+    .btn {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 12px 24px;
+      min-width: 160px;
+      font-family: var(--font-body);
+      font-size: 18px;
+      line-height: 22px;
+      text-decoration: none;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    
+    .btn-yellow {
+      background: var(--yellow);
+      color: var(--black);
+    }
+    
+    .btn-yellow:hover {
+      background: var(--yellow-hover);
+    }
+    
+    .btn-gray {
+      background: var(--gray-mid);
+      color: var(--black);
+    }
+    
+    .btn-gray:hover {
+      background: var(--gray-hover);
+    }
+    
+    .btn-label {
+      font-weight: 700;
+    }
+    
+    .btn-sublabel {
+      font-weight: 400;
+      font-size: 16px;
+    }
+    
+    /* ═══════════════════════════════════════════════════════════════
+       MENU OVERLAY - czarne tło, żółty tekst
+    ═══════════════════════════════════════════════════════════════ */
+    .menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--black);
+      z-index: 1000;
+      padding: var(--passe-partout);
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .menu-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .menu-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 48px;
+    }
+    
+    .menu-close {
+      width: 32px;
+      height: 32px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      position: relative;
+    }
+    
+    .menu-close::before,
+    .menu-close::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--yellow);
+    }
+    
+    .menu-close::before { transform: rotate(45deg); }
+    .menu-close::after { transform: rotate(-45deg); }
+    
+    /* Logo w menu - żółte */
+    .menu-header .logo-pwm {
+      filter: brightness(0) saturate(100%) invert(79%) sepia(68%) saturate(1031%) hue-rotate(358deg) brightness(103%) contrast(104%);
+    }
+    
+    .menu-header .logo-80 {
+      color: var(--yellow);
+    }
+    
+    .menu-nav {
+      flex: 1;
+    }
+    
+    .menu-nav ul {
+      list-style: none;
+    }
+    
+    .menu-nav > ul > li {
+      margin-bottom: 4px;
+    }
+    
+    .menu-nav > ul > li > a {
+      font-family: var(--font-display);
+      font-size: 28px;
+      line-height: 34px;
+      font-weight: 700;
+      color: var(--yellow);
+      text-decoration: none;
+      text-transform: uppercase;
+      display: block;
+      padding: 8px 0;
+      transition: padding-left 0.2s ease;
+    }
+    
+    .menu-nav > ul > li > a:hover {
+      padding-left: 16px;
+    }
+    
+    .menu-nav .submenu {
+      padding-left: 24px;
+      margin-bottom: 12px;
+    }
+    
+    .menu-nav .submenu li {
+      margin-bottom: 2px;
+    }
+    
+    .menu-nav .submenu a {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 22px;
+      line-height: 28px;
+      color: var(--yellow);
+      text-decoration: none;
+      text-transform: uppercase;
+      display: block;
+      padding: 4px 0;
+      transition: padding-left 0.2s ease;
+    }
+    
+    .menu-nav .submenu a:hover {
+      padding-left: 16px;
+    }
+    
+    /* ═══════════════════════════════════════════════════════════════
+       ROUTE / TRASA
+    ═══════════════════════════════════════════════════════════════ */
+    .route-table {
+      width: 100%;
+      max-width: 400px;
+    }
+    
+    .route-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--black);
+    }
+    
+    .route-row:first-child {
+      border-top: 1px solid var(--black);
+    }
+    
+    .route-city {
+      font-weight: 700;
+    }
+    
+    .route-time {
+      text-align: right;
+    }
+    
+    .route-map {
+      width: 100%;
+      max-width: 500px;
+      margin-top: 24px;
+    }
+    
+    .route-map-placeholder {
+      background: var(--gray-mid);
+      border-radius: 16px;
+      padding: 48px;
+      text-align: center;
+      color: var(--black);
+      opacity: 0.7;
+    }
+    
+    /* ═══════════════════════════════════════════════════════════════
+       IMAGES
+    ═══════════════════════════════════════════════════════════════ */
+    .img-fluid {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    
+    .img-rounded {
+      border-radius: 16px;
+    }
+    
+    .img-placeholder {
+      background: var(--gray-mid);
+      border-radius: 16px;
+      padding: 80px 24px;
+      text-align: center;
+      color: var(--black);
+      opacity: 0.7;
+    }
+    
+    /* ═══════════════════════════════════════════════════════════════
+       LIST STYLING
+    ═══════════════════════════════════════════════════════════════ */
+    ul.styled {
+      list-style: none;
+      padding-left: 0;
+    }
+    
+    ul.styled li {
+      padding-left: 24px;
+      position: relative;
+      margin-bottom: 8px;
+    }
+    
+    ul.styled li::before {
+      content: '•';
+      position: absolute;
+      left: 8px;
+      top: 0;
+    }
+    
+    /* ═══════════════════════════════════════════════════════════════
+       FORM / TALLY EMBED
+    ═══════════════════════════════════════════════════════════════ */
+    .form-placeholder {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 48px 24px;
+      text-align: center;
+    }
+    
+    .form-placeholder p {
+      color: var(--gray-mid);
+      margin-bottom: 16px;
+    }
+    
+    .form-placeholder code {
+      background: var(--gray-light);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    .tally-embed {
+      width: 100%;
+      min-height: 400px;
+      border: none;
+      border-radius: 16px;
+    }
+    
+    /* Prosty formularz fallback */
+    .simple-form {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 32px;
+    }
+    
+    .form-group {
+      margin-bottom: 16px;
+    }
+    
+    .form-group label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      font-family: var(--font-body);
+      font-size: 16px;
+      border: 2px solid var(--gray-mid);
+      border-radius: 8px;
+      transition: border-color 0.2s ease;
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--black);
+    }
+    
+    .form-checkbox {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    
+    .form-checkbox input {
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+    }
+    
+    .form-checkbox label {
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    
+    /* ═══════════════════════════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════════════════════════ */
+    .footer {
+      padding: 48px var(--gap);
+    }
+    
+    .footer-content {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 32px;
+    }
+    
+    .footer-left {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    
+    .footer-mkidn {
+      max-width: 200px;
+    }
+    
+    .footer-mkidn img {
+      height: 60px;
+      width: auto;
+      margin-bottom: 8px;
+    }
+    
+    .footer-mkidn p {
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    
+    .footer-social {
+      display: flex;
+      gap: 16px;
+    }
+    
+    .footer-social a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      transition: opacity 0.2s ease;
+    }
+    
+    .footer-social a:hover {
+      opacity: 0.7;
+    }
+    
+    .footer-social img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+    }
+    
+    .footer-links {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--black);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      font-size: 14px;
+    }
+    
+    /* ═══════════════════════════════════════════════════════════════
+       UTILITIES
+    ═══════════════════════════════════════════════════════════════ */
+    .text-center { text-align: center; }
+    .mt-32 { margin-top: 32px; }
+    .mt-48 { margin-top: 48px; }
+    .mb-16 { margin-bottom: 16px; }
+    .mb-32 { margin-bottom: 32px; }
+    
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       MENU OVERLAY
+  ═══════════════════════════════════════════════════════════════ -->
+  <div class="menu-overlay" id="menuOverlay">
+    <div class="menu-header">
+      <button class="menu-close" id="menuClose" aria-label="Zamknij menu"></button>
+      <div class="header-logos">
+        <div class="logo-80">80<small>LAT</small></div>
+        <a href="https://pwm.com.pl" target="_blank">
+          <img src="assets/logo-pwm.png" alt="PWM" class="logo-pwm">
+        </a>
+      </div>
+    </div>
+    <nav class="menu-nav">
+      <ul>
+        <li>
+          <a href="#akcja">O akcji</a>
+          <ul class="submenu">
+            <li><a href="#trasa">Trasa</a></li>
+            <li><a href="#koncerty">Koncerty i spotkania</a></li>
+            <li><a href="#wagony">Wagony pełne muzyki</a></li>
+          </ul>
+        </li>
+        <li><a href="#final">Koncert finałowy</a></li>
+        <li><a href="#pwm">O PWM</a></li>
+        <li>
+          <a href="#bilety-przejazd">Bilety</a>
+          <ul class="submenu">
+            <li><a href="#bilety-przejazd">Na przejazd</a></li>
+            <li><a href="#bilety-koncert">Na koncert</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       HEADER - biała góra z pociągiem + żółta dolna część z treścią
+  ═══════════════════════════════════════════════════════════════ -->
+  <header class="header">
+    <!-- Biała górna część z logo i pociągiem -->
+    <div class="header-white">
+      <div class="header-top">
+        <button class="hamburger" id="menuOpen" aria-label="Otwórz menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <div class="header-logos">
+          <div class="logo-80">80<small>LAT</small></div>
+          <a href="https://pwm.com.pl" target="_blank">
+            <img src="assets/logo-pwm.png" alt="PWM Edition" class="logo-pwm">
+          </a>
+        </div>
+      </div>
+      
+      <!-- Grafika pociągu -->
+      <picture class="header-train">
+        <source srcset="assets/pociag.webp" type="image/webp">
+        <source srcset="assets/pociag.png" type="image/png">
+        <img src="assets/pociag.webp" alt="Pociąg PWM w RUCHU" loading="eager">
+      </picture>
+    </div>
+    
+    <!-- Żółta dolna część z treścią -->
+    <div class="header-yellow">
+      <div class="header-content">
+        <div class="header-title">
+          <span class="title-line title-line-top"></span>
+          <h1>PWM<br>W RUCHU</h1>
+          <span class="title-line title-line-bottom"></span>
+        </div>
+        
+        <div class="header-meta">
+          <div class="meta-row">
+            <span class="meta-label">DATA</span>
+            <span class="meta-value">21 GRUDNIA 2025</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">TRASA</span>
+            <span class="meta-value">KRAKÓW<span class="dash">—</span>ŁÓDŹ<span class="dash">—</span>WARSZAWA<span class="dash">—</span>MALBORK<span class="dash">—</span>GDAŃSK</span>
+          </div>
+        </div>
+        
+        <div class="header-intro">
+          <p><strong>W Pociągu Wypełnionym Muzyką:</strong> KONCERTY, SPOTKANIA, WARSZTATY i wiele innych atrakcji.</p>
+          <p class="mt-32">Na finał koncert jubileuszowy <strong>LAETA MUNDUS</strong> w&nbsp;Centrum Św. Jana w Gdańsku. Wystąpią: <strong>ENSEMBLE PEREGRINA, ADAM BAŁDYCH i MICHAŁ GÓRCZYŃSKI</strong>.</p>
+          <p class="mt-32">Odbierz bilet i udaj się w muzyczną podróż z Polskim Wydawnictwem Muzycznym!</p>
+          
+          <div class="header-cta">
+            <a href="#bilety-przejazd" class="btn btn-gray">
+              <span class="btn-label">odbierz bilet</span>
+              <span class="btn-sublabel">na przejazd</span>
+            </a>
+            <a href="#bilety-koncert" class="btn btn-gray">
+              <span class="btn-label">odbierz zaproszenie</span>
+              <span class="btn-sublabel">na koncert</span>
+            </a>
+            <a href="#pwm" class="btn btn-gray">
+              <span class="btn-label">więcej</span>
+              <span class="btn-sublabel">o PWM</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SEKCJA: O AKCJI
+  ═══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="akcja">
+    <div class="section-inner">
+      <h2>PWM W RUCHU. POCIĄG WYPEŁNIONY MUZYKĄ</h2>
+      
+      <p class="lead mb-32">Weź udział w kampanii PWM w Ruchu i wsiądź do pociągu wypełnionego muzyką.</p>
+      
+      <p>21 grudnia o g. 8:15 ze stacji Kraków Główny odjedzie specjalny, jubileuszowy pociąg Polskiego Wydawnictwa Muzycznego. Wyrusz w niezapomnianą podróż do Gdańska!</p>
+      
+      <div class="grid grid-2 mt-48" id="trasa">
+        <div>
+          <div class="header-meta">
+            <div class="meta-row">
+              <span class="meta-label">DATA</span>
+              <span class="meta-value">21 GRUDNIA 2025</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">TRASA</span>
+              <span class="meta-value">KRAKÓW<span class="dash">—</span>ŁÓDŹ<span class="dash">—</span>WARSZAWA<span class="dash">—</span>MALBORK<span class="dash">—</span>GDAŃSK</span>
+            </div>
+          </div>
+          
+          <h3 class="mt-32">TRASA</h3>
+          <div class="route-table">
+            <div class="route-row">
+              <span class="route-city">Kraków Główny</span>
+              <span class="route-time">8:15</span>
+            </div>
+            <div class="route-row">
+              <span class="route-city">Łódź Widzew</span>
+              <span class="route-time">12:00</span>
+            </div>
+            <div class="route-row">
+              <span class="route-city">Warszawa Centralna</span>
+              <span class="route-time">13:50</span>
+            </div>
+            <div class="route-row">
+              <span class="route-city">Malbork</span>
+              <span class="route-time">17:00</span>
+            </div>
+            <div class="route-row">
+              <span class="route-city">Gdańsk</span>
+              <span class="route-time">17:40</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="route-map">
+          <div class="route-map-placeholder">
+            <p>[ MAPA TRASY ]</p>
+            <p><small>Kraków → Łódź → Warszawa → Malbork → Gdańsk</small></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SEKCJA: KONCERTY I SPOTKANIA
+  ═══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="koncerty">
+    <div class="section-inner">
+      <div class="grid grid-2">
+        <div>
+          <div class="img-placeholder">
+            <p>[ ZDJĘCIE Z KONCERTU ]</p>
+            <p><small>Wkrótce</small></p>
+          </div>
+        </div>
+        
+        <div>
+          <h2>KONCERTY I SPOTKANIA SYGNOWANE PWM</h2>
+          
+          <p>Podczas przejazdu na pasażerów czeka bogaty program artystyczny, obejmujący występy wybitnych formacji i solistów związanych z PWM.</p>
+          
+          <p>W trakcie muzycznej podróży z Krakowa do Warszawy będzie można wysłuchać wykonań <strong>Kwartetu Śląskiego</strong>, <strong>Macieja Frąckiewicza</strong>, <strong>Bartłomieja Dusia i Magdaleny Duś</strong>, <strong>Joanny Freszel i Bartłomieja Kominka</strong>, czy <strong>Royal String Quartet</strong>.</p>
+          
+          <p>Na trasie Warszawa–Gdańsk wystąpią <strong>Mateusz Kowalski</strong>, <strong>Ania Karpowicz</strong>, <strong>Adam Strug</strong>, <strong>Agata Szymczewska i Wojciech Szymczewski</strong> oraz formacja <strong>proModern</strong>.</p>
+          
+          <p>Swoje interpretacje elektroniczne wybranych kompozytorów polskich prezentować przez całą drogę będą <strong>Skalpel</strong> i duet <strong>HCH</strong> Jacek Hawryluk i Bartek Chaciński.</p>
+          
+          <p>Na peronach wybranych stacji wystąpią <strong>Motion Trio</strong> oraz <strong>Tubicinatores Gedanenses</strong>.</p>
+          
+          <p><strong>Będzie muzycznie!</strong></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SEKCJA: WAGONY PEŁNE MUZYKI
+  ═══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="wagony">
+    <div class="section-inner">
+      <h2>PWM W RUCHU. POCIĄG WYPEŁNIONY MUZYKĄ</h2>
+      
+      <p class="mb-32">Muzyczny pociąg PWM wypełni się muzyką dosłownie i w przenośni. Poza sceną muzyczną w wagonie koncertowym <strong>Lutosławski</strong> nie zabraknie atrakcji okołomuzycznych.</p>
+      
+      <div class="grid grid-2">
+        <div>
+          <picture>
+            <source srcset="assets/pociag.webp" type="image/webp">
+            <source srcset="assets/pociag.png" type="image/png">
+            <img src="assets/pociag.webp" alt="Wagon PWM" class="img-fluid img-rounded mb-32" loading="lazy">
+          </picture>
+        </div>
+        
+        <div>
+          <div class="content-block">
+            <p>W <strong>Wagonie Chopin</strong> zapoznać się będzie można z bogatą ofertą wydawniczą PWM: książki, e-booki, wydawnictwa książkowe, a przede wszystkim szeroka lista nagrań muzycznych znajdujących się w zasobach PWM udostępniona zostanie na tabletach wyposażonych w zestawy słuchawkowe.</p>
+          </div>
+          
+          <div class="content-block">
+            <p>W pociągu nie zabraknie akcentów kulinarnych. W <strong>wagonie restauracyjnym Wieniawski</strong> o specjalne menu inspirowane muzyką zadba <strong>Mateusz Gessler</strong>.</p>
+          </div>
+          
+          <div class="content-block">
+            <p><strong>Wagon Szymanowski</strong> będzie sceną spotkań autorskich prowadzonych przez redaktorów Ruchu Muzycznego z twórcami skupionymi wokół PWM oraz artystami występującymi na pokładzie, a dla wszystkich uczestników serwowana będzie pyszna kawa i przekąski.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="content-block mt-48">
+        <p>W przedziałowym <strong>wagonie Bacewicz</strong> do dyspozycji będą między innymi:</p>
+        
+        <ul class="styled">
+          <li><strong>przedział odsłuchowy Anaklasis</strong> – możliwość słuchania z wykorzystaniem wielokanałowych słuchawek wyselekcjonowanych kompozycji wydanych w ramach poszczególnych serii wydawniczych Portraits, Sounds, Revisions i Heritage</li>
+          <li><strong>przedział Cześć!</strong> – miejsce spotkań z twórcami i muzykami, możliwość zdobycia autografu i wykonania pamiątkowej fotografii instax</li>
+          <li><strong>mobilne Studio Programu 2 Polskiego Radia</strong> – dziennikarze Radiowej Dwójki relacjonować będą przejazd oraz prowadzić rozmowy z twórcami i artystami</li>
+          <li><strong>przedział Opanuj dźwięk!</strong> – poznasz sztukę aranżacji muzycznej w praktyce</li>
+          <li><strong>przedział Jak się robi nuty?</strong> – kurs składu nutowego, proces wydawniczy w pigułce</li>
+          <li><strong>Muzyczna Poczta PWM</strong> – wysyłanie pocztówek okolicznościowych z pociągu</li>
+        </ul>
+        
+        <p class="mt-32"><strong>To nie wszystko!</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SEKCJA: KONCERT FINAŁOWY
+  ═══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="final">
+    <div class="section-inner">
+      <h2>NA FINAŁ JUBILEUSZOWY KONCERT LAETA MUNDUS W GDAŃSKU</h2>
+      
+      <div class="grid grid-2">
+        <div>
+          <p>21 grudnia br. o godz. 20:00 w Centrum św. Jana w Gdańsku zabrzmi wyjątkowy projekt Polskiego Wydawnictwa Muzycznego <strong>LAETA MUNDUS</strong> sygnowany marką ANAKLASIS.</p>
+          
+          <p>Spektakularny projekt wirtuoza skrzypiec <strong>Adama Bałdycha</strong> i <strong>Agnieszki Budzińskiej-Bennett</strong> z udziałem szwajcarskiej formacji <strong>Ensemble Peregrina</strong> i klarnecisty <strong>Michała Górczyńskiego</strong> dopełni muzyczną podróż z PWM.</p>
+          
+          <a href="#bilety-koncert" class="btn btn-yellow mt-32">
+            <span class="btn-label">odbierz zaproszenie</span>
+            <span class="btn-sublabel">na koncert</span>
+          </a>
+        </div>
+        
+        <div>
+          <div class="img-placeholder">
+            <p>[ ZDJĘCIE Z KONCERTU LAETA MUNDUS ]</p>
+            <p><small>Wkrótce</small></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SEKCJA: O PWM
+  ═══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="pwm">
+    <div class="section-inner">
+      <h2>POLSKIE WYDAWNICTWO MUZYCZNE — 80 LAT POLSKIEJ MUZYKI</h2>
+      
+      <!-- Zdjęcie budynku PWM -->
+      <picture class="mb-32" style="display: block;">
+        <source srcset="assets/krak_2.webp" type="image/webp">
+        <img src="assets/krak_2.webp" alt="Siedziba Polskiego Wydawnictwa Muzycznego w Krakowie" class="img-fluid img-rounded" loading="lazy">
+      </picture>
+      
+      <div class="grid grid-2">
+        <div>
+          <h3>PWM — JEDNA Z NAJWAŻNIEJSZYCH INSTYTUCJI MUZYCZNYCH W POLSCE</h3>
+          
+          <p>Polskie Wydawnictwo Muzyczne działa od 1945 roku, specjalizując się w publikacji materiałów nutowych, książek o muzyce klasycznej, jazzowej i filmowej oraz materiałów edukacyjnych.</p>
+          
+          <p>Oficyna promuje polskich kompozytorów na świecie, prowadzi Polską Bibliotekę Muzyczną, wydaje prestiżowy „Ruch Muzyczny" i rozwija nowoczesną markę fonograficzną ANAKLASIS.</p>
+        </div>
+        
+        <div>
+          <h3>CO ROBIMY?</h3>
+          
+          <ul class="styled">
+            <li><strong>Publikacje nutowe i książkowe</strong> – od muzyki dawnej po współczesną, od repertuaru dla początkujących po edycje naukowe.</li>
+            <li><strong>Edukacja</strong> – materiały dydaktyczne, podręczniki, wydarzenia, w tym Dzień Edukacji Muzycznej.</li>
+            <li><strong>Archiwum i digitalizacja</strong> – udostępnianie unikatowych zasobów w Polskiej Bibliotece Muzycznej.</li>
+            <li><strong>Rozwój kultury muzycznej</strong> – wspieranie wykonawców, współpraca międzynarodowa, podcasty i działania popularyzatorskie.</li>
+          </ul>
+          
+          <a href="https://pwm.com.pl/sklep" target="_blank" class="btn btn-yellow mt-32">
+            <span class="btn-label">odwiedź Księgarnię</span>
+            <span class="btn-sublabel">Muzyczną PWM</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SEKCJA: BILETY NA PRZEJAZD
+  ═══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="bilety-przejazd">
+    <div class="section-inner">
+      <h2>ZDOBĄDŹ BILETY NA PRZEJAZD PWM W RUCHU. POCIĄG WYPEŁNIONY MUZYKĄ</h2>
+      
+      <div class="grid grid-2">
+        <div>
+          <p>Chcesz wyruszyć w niezwykłą muzyczną podróż? Zdobądź bilety na antenie <strong>Programu 2 Polskiego Radia</strong> – słuchaj programów <strong>„Poranek Dwójki"</strong> oraz <strong>„Wybieram Dwójkę"</strong> już od 11 grudnia.</p>
+          
+          <h3 class="mt-32">Co obejmuje pakiet dla słuchaczy?</h3>
+          
+          <ul class="styled">
+            <li>przejazd tym wyjątkowym pociągiem na trasie Kraków–Gdańsk,</li>
+            <li>nocleg w Hotelu Arche Dwór Uphagena w Gdańsku,</li>
+            <li>bilety na koncert w Centrum św. Jana dla dwóch osób.</li>
+          </ul>
+          
+          <p class="mt-32">Dołącz do muzycznej wyprawy „PWM w RUCHU. Pociąg Wypełniony Muzyką"!</p>
+          
+          <p>Warto być z Dwójką przez cały czas — na antenie pojawi się transmisja koncertu finałowego z Gdańska, relacje z podróży pociągiem, wejścia z odwiedzanych stacji oraz rozmowy i spotkania z artystami uczestniczącymi w akcji.</p>
+        </div>
+        
+        <div>
+          <picture>
+            <source srcset="assets/bilet.webp" type="image/webp">
+            <source srcset="assets/bilet.png" type="image/png">
+            <img src="assets/bilet.webp" alt="Bilet na przejazd" class="img-fluid img-rounded" loading="lazy">
+          </picture>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SEKCJA: BILETY NA KONCERT (FORMULARZ TALLY)
+  ═══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="bilety-koncert">
+    <div class="section-inner">
+      <h2>ZDOBĄDŹ BILETY NA KONCERT FINAŁOWY</h2>
+      
+      <div class="grid grid-2">
+        <div>
+          <p>Chcesz przeżyć wyjątkowy wieczór z muzyką „Laeta Mundus" w Centrum św. Jana w Gdańsku?</p>
+          
+          <p>Mamy dla Was <strong>bezpłatne zaproszenia</strong> na wielki finał akcji „PWM w RUCHU. Pociąg Wypełniony Muzyką"!</p>
+          
+          <p>Liczba miejsc jest ograniczona, dlatego nie zwlekaj — wypełnij krótki formularz zgłoszeniowy, a bilety zostaną przesłane bezpośrednio na Twój adres e-mail.</p>
+          
+          <p class="mt-32"><small>Bilety na koncert możesz zdobyć także w social mediach PWM, social mediach Polityka oraz na antenie Dwójki.</small></p>
+        </div>
+        
+        <div>
+          <!-- TALLY EMBED PLACEHOLDER -->
+          <div class="form-placeholder" id="tally-placeholder">
+            <p><strong>Tu będzie formularz Tally</strong></p>
+            <p>Wklej embed code z Tally.so:</p>
+            <code>&lt;iframe src="https://tally.so/embed/TWOJ_ID"&gt;&lt;/iframe&gt;</code>
+          </div>
+          
+          <!-- Alternatywnie prosty formularz HTML (zakomentowany)
+          <form class="simple-form" action="https://formspree.io/f/TWOJ_ID" method="POST">
+            <div class="form-group">
+              <label for="imie">Imię</label>
+              <input type="text" id="imie" name="imie" required>
+            </div>
+            <div class="form-group">
+              <label for="nazwisko">Nazwisko</label>
+              <input type="text" id="nazwisko" name="nazwisko" required>
+            </div>
+            <div class="form-group">
+              <label for="email">Adres e-mail</label>
+              <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+              <label for="telefon">Numer telefonu</label>
+              <input type="tel" id="telefon" name="telefon">
+            </div>
+            <div class="form-checkbox">
+              <input type="checkbox" id="zgoda1" name="zgoda1" required>
+              <label for="zgoda1">Wyrażam zgodę na przetwarzanie danych osobowych...</label>
+            </div>
+            <div class="form-checkbox">
+              <input type="checkbox" id="zgoda2" name="zgoda2" required>
+              <label for="zgoda2">Akceptuję regulamin akcji...</label>
+            </div>
+            <button type="submit" class="btn btn-yellow" style="width: 100%;">
+              <span class="btn-label">Wyślij zgłoszenie</span>
+            </button>
+          </form>
+          -->
+        </div>
+      </div>
+      
+      <div class="text-center mt-48">
+        <a href="#" class="btn btn-gray">
+          <span class="btn-label">regulamin</span>
+          <span class="btn-sublabel">akcji</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-left">
+        <div class="footer-mkidn">
+          <!-- Logo MKiDN - placeholder -->
+          <div style="width: 120px; height: 60px; background: var(--gray-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; text-align: center;">MKiDN<br>Logo</div>
+          <p>Dofinansowano ze środków Ministra Kultury i&nbsp;Dziedzictwa Narodowego</p>
+        </div>
+      </div>
+      
+      <div class="footer-social">
+        <a href="https://facebook.com/pwmedition" target="_blank" aria-label="Facebook PWM">
+          <img src="assets/facebook.png" alt="Facebook">
+        </a>
+        <a href="https://instagram.com/pwmedition" target="_blank" aria-label="Instagram PWM">
+          <img src="assets/instagram.png" alt="Instagram">
+        </a>
+        <a href="https://x.com/pwmedition" target="_blank" aria-label="X (Twitter) PWM">
+          <!-- X logo placeholder -->
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+        </a>
+        <a href="https://youtube.com/@pwmedition" target="_blank" aria-label="YouTube PWM">
+          <img src="assets/youtube.png" alt="YouTube">
+        </a>
+      </div>
+    </div>
+    
+    <div class="footer-links">
+      <a href="#">Regulamin akcji</a>
+      <a href="#">Polityka prywatności</a>
+      <a href="https://pwm.com.pl" target="_blank">pwm.com.pl</a>
+    </div>
+  </footer>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SCRIPTS
+  ═══════════════════════════════════════════════════════════════ -->
+  <script>
+    // Menu toggle
+    const menuOverlay = document.getElementById('menuOverlay');
+    const menuOpen = document.getElementById('menuOpen');
+    const menuClose = document.getElementById('menuClose');
+    
+    menuOpen.addEventListener('click', () => {
+      menuOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+    
+    menuClose.addEventListener('click', () => {
+      menuOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    });
+    
+    // Close menu on link click
+    menuOverlay.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        menuOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+    });
+    
+    // Close menu on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && menuOverlay.classList.contains('active')) {
+        menuOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+  </script>
+
+</body>
+</html>
