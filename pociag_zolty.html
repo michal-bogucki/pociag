@@ -171,7 +171,7 @@
     }
     
     /* ═══════════════════════════════════════════════════════════════
-       HEADER - wąski biały top bar + żółta główna sekcja z pociągiem
+       HEADER - biały topbar + biała sekcja z tytułem + żółta z pociągiem
     ═══════════════════════════════════════════════════════════════ */
     .header {
       position: relative;
@@ -182,7 +182,7 @@
       overflow: hidden;
     }
     
-    /* Biały wąski top bar */
+    /* Biały top bar */
     .header-topbar {
       background: var(--white);
       padding: 16px var(--gap);
@@ -238,48 +238,74 @@
       display: block;
     }
     
-    /* Żółta główna sekcja z pociągiem */
-    .header-main {
-      background: var(--yellow);
-      padding: var(--gap);
-      position: relative;
-      min-height: 500px;
+    /* BIAŁA sekcja z tytułem */
+    .header-white {
+      background: var(--white);
+      padding: 32px var(--gap);
     }
     
     @media (min-width: 768px) {
-      .header-main {
-        min-height: 600px;
-        padding: 32px;
+      .header-white {
+        padding: 48px 40px;
       }
     }
     
-    @media (min-width: 1024px) {
-      .header-main {
-        min-height: 700px;
-        padding: 40px;
-      }
+    .header-white-inner {
+      max-width: 500px;
     }
     
-    /* Górna część headera - DATA/TRASA + tytuł */
-    .header-top-content {
-      position: relative;
-      z-index: 10;
-      max-width: 450px;
+    /* Tytuł PWM W RUCHU */
+    .header-title {
+      margin-bottom: 24px;
     }
     
-    /* Moduł DATA/TRASA - mały na górze */
+    .header-title h1 {
+      font-size: clamp(56px, 14vw, 120px);
+      line-height: 0.85;
+      font-weight: 700;
+    }
+    
+    .title-line {
+      display: block;
+      height: 2px;
+      background: var(--black);
+      margin: 8px 0;
+    }
+    
+    .title-line-top {
+      width: 60px;
+    }
+    
+    .title-line-bottom {
+      width: 200px;
+    }
+    
+    @media (min-width: 768px) {
+      .title-line-top { width: 80px; }
+      .title-line-bottom { width: 300px; }
+    }
+    
+    /* Moduł DATA/TRASA */
     .header-meta-small {
       font-family: var(--font-display);
       font-size: 12px;
-      line-height: 16px;
+      line-height: 18px;
       text-transform: uppercase;
-      margin-bottom: 16px;
+      margin-bottom: 24px;
+      max-width: 500px;
+    }
+    
+    @media (min-width: 768px) {
+      .header-meta-small {
+        font-size: 14px;
+        line-height: 20px;
+      }
     }
     
     .meta-row-small {
       display: flex;
-      gap: 12px;
-      padding: 4px 0;
+      gap: 16px;
+      padding: 6px 0;
       border-bottom: 1px solid var(--black);
     }
     
@@ -288,7 +314,7 @@
     }
     
     .meta-row-small .meta-label {
-      min-width: 40px;
+      min-width: 50px;
       font-weight: 400;
     }
     
@@ -297,114 +323,89 @@
       font-weight: 700;
     }
     
-    /* Tytuł PWM W RUCHU */
-    .header-title {
-      margin-bottom: 16px;
-    }
-    
-    .header-title h1 {
-      font-size: clamp(48px, 12vw, 80px);
-      line-height: 0.9;
-      font-weight: 700;
-    }
-    
-    .title-line {
-      display: block;
-      height: 2px;
-      background: var(--black);
-      margin: 6px 0;
-    }
-    
-    .title-line-top {
-      width: 80px;
-    }
-    
-    .title-line-bottom {
-      width: 180px;
-    }
-    
-    @media (min-width: 768px) {
-      .title-line-top { width: 100px; }
-      .title-line-bottom { width: 240px; }
-    }
-    
-    /* Tekst intro pod tytułem */
+    /* Tekst intro */
     .header-intro-left {
-      max-width: 320px;
-      margin-bottom: 16px;
+      max-width: 400px;
     }
     
     .header-intro-left p {
-      font-size: 14px;
-      line-height: 20px;
+      font-size: 16px;
+      line-height: 24px;
     }
     
     @media (min-width: 768px) {
       .header-intro-left p {
-        font-size: 16px;
-        line-height: 22px;
+        font-size: 18px;
+        line-height: 26px;
       }
     }
     
-    /* Pociąg - na żółtym tle, duży */
+    /* ŻÓŁTA sekcja z pociągiem */
+    .header-yellow {
+      background: var(--yellow);
+      padding: var(--gap);
+      padding-bottom: 100px;
+      position: relative;
+      min-height: 350px;
+    }
+    
+    @media (min-width: 768px) {
+      .header-yellow {
+        min-height: 450px;
+        padding: 40px;
+        padding-bottom: 120px;
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .header-yellow {
+        min-height: 550px;
+        padding-bottom: 140px;
+      }
+    }
+    
+    /* Pociąg - DUŻY */
     .header-train {
-      position: absolute;
-      bottom: 80px;
-      left: 0;
-      right: 0;
       width: 100%;
-      z-index: 5;
-      pointer-events: none;
+      margin: 20px 0;
     }
     
     .header-train img {
       width: 100%;
-      max-width: 1000px;
+      max-width: 1400px;
       height: auto;
       display: block;
       margin: 0 auto;
     }
     
-    @media (min-width: 768px) {
-      .header-train {
-        bottom: 100px;
-      }
-    }
-    
-    @media (min-width: 1024px) {
-      .header-train {
-        bottom: 120px;
-      }
+    @media (min-width: 1200px) {
       .header-train img {
-        max-width: 1100px;
+        max-width: 1600px;
       }
     }
     
-    /* Tekst po prawej stronie - info o LAETA MUNDUS */
+    /* Tekst LAETA MUNDUS - prawy dolny róg */
     .header-right-content {
-      position: absolute;
-      top: 100px;
-      right: var(--gap);
-      max-width: 280px;
+      max-width: 320px;
       text-align: right;
-      z-index: 10;
-      display: none;
+      margin-left: auto;
+      margin-top: 24px;
     }
     
     @media (min-width: 768px) {
       .header-right-content {
-        display: block;
-        top: 120px;
-        right: 32px;
-        max-width: 300px;
-      }
-    }
-    
-    @media (min-width: 1024px) {
-      .header-right-content {
-        top: 140px;
+        position: absolute;
+        bottom: 140px;
         right: 40px;
         max-width: 340px;
+        margin: 0;
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .header-right-content {
+        bottom: 160px;
+        max-width: 380px;
       }
     }
     
@@ -423,14 +424,20 @@
       margin-bottom: 8px;
     }
     
-    /* Dolna część headera - buttony */
+    @media (min-width: 768px) {
+      .header-right-content .concert-title {
+        font-size: 28px;
+        line-height: 32px;
+      }
+    }
+    
+    /* Przyciski na dole */
     .header-bottom {
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
       padding: var(--gap);
-      z-index: 15;
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
@@ -438,7 +445,7 @@
     
     @media (min-width: 768px) {
       .header-bottom {
-        padding: 32px;
+        padding: 32px 40px;
       }
     }
     
@@ -969,10 +976,15 @@
       </div>
     </div>
     
-    <!-- Żółta główna sekcja -->
-    <div class="header-main">
-      <!-- Lewa górna część - DATA/TRASA + tytuł + intro -->
-      <div class="header-top-content">
+    <!-- BIAŁA sekcja z tytułem -->
+    <div class="header-white">
+      <div class="header-white-inner">
+        <div class="header-title">
+          <span class="title-line title-line-top"></span>
+          <h1>PWM<br>W RUCHU</h1>
+          <span class="title-line title-line-bottom"></span>
+        </div>
+        
         <div class="header-meta-small">
           <div class="meta-row-small">
             <span class="meta-label">DATA</span>
@@ -984,18 +996,22 @@
           </div>
         </div>
         
-        <div class="header-title">
-          <span class="title-line title-line-top"></span>
-          <h1>PWM<br>W RUCHU</h1>
-          <span class="title-line title-line-bottom"></span>
-        </div>
-        
         <div class="header-intro-left">
-          <p>W Pociągu Wypełnionym Muzyką: <strong>KONCERTY, SPOTKANIA, WARSZTATY</strong> i wiele innych atrakcji.</p>
+          <p>W Pociągu Wypełnionym Muzyką:<br><strong>KONCERTY, SPOTKANIA, WARSZTATY</strong> i wiele innych atrakcji.</p>
         </div>
       </div>
+    </div>
+    
+    <!-- ŻÓŁTA sekcja z pociągiem -->
+    <div class="header-yellow">
+      <!-- Grafika pociągu - DUŻA -->
+      <picture class="header-train">
+        <source srcset="assets/pociag_wizuale_v3.webp" type="image/webp">
+        <source srcset="assets/pociag_wizuale_v3.png" type="image/png">
+        <img src="assets/pociag_wizuale_v3.webp" alt="Pociąg PWM w RUCHU" loading="eager">
+      </picture>
       
-      <!-- Prawa strona - info o koncercie (desktop) -->
+      <!-- Info o koncercie - prawy dolny róg -->
       <div class="header-right-content">
         <p>Na finał koncert jubileuszowy</p>
         <div class="concert-title">LAETA MUNDUS</div>
@@ -1003,13 +1019,6 @@
         <p style="margin-top: 12px;">Wystąpią: <strong>ENSEMBLE PEREGRINA, ADAM BAŁDYCH i MICHAŁ GÓRCZYŃSKI</strong>.</p>
         <p style="margin-top: 12px;">Odbierz bilet i udaj się w muzyczną podróż z Polskim Wydawnictwem Muzycznym!</p>
       </div>
-      
-      <!-- Grafika pociągu -->
-      <picture class="header-train">
-        <source srcset="assets/pociag_wizuale_v3.webp" type="image/webp">
-        <source srcset="assets/pociag_wizuale_v3.png" type="image/png">
-        <img src="assets/pociag_wizuale_v3.webp" alt="Pociąg PWM w RUCHU" loading="eager">
-      </picture>
       
       <!-- Buttony na dole -->
       <div class="header-bottom">
