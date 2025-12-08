@@ -238,34 +238,6 @@
       display: block;
     }
     
-    .logo-mkidn {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-left: 16px;
-      padding-left: 16px;
-      border-left: 1px solid var(--gray-mid);
-    }
-    
-    .logo-mkidn-img {
-      height: 32px;
-      width: 32px;
-      flex-shrink: 0;
-    }
-    
-    .mkidn-text {
-      font-size: 9px;
-      line-height: 1.2;
-      color: var(--black);
-      display: none;
-    }
-    
-    @media (min-width: 768px) {
-      .mkidn-text {
-        display: block;
-      }
-    }
-    
     /* Główna sekcja z ukośnym podziałem */
     .header-main {
       position: relative;
@@ -403,31 +375,30 @@
       }
     }
     
-    /* Pociąg - DUŻY, wychodzi poza krawędzie */
+    /* Pociąg - dokładnie na przecięciu białego i żółtego */
     .header-train {
       position: absolute;
       left: 50%;
       top: 55%;
       transform: translate(-50%, -50%);
-      width: 110%;
-      max-width: 1800px;
+      width: 90%;
+      max-width: 1300px;
       z-index: 5;
       pointer-events: none;
     }
     
     @media (min-width: 768px) {
       .header-train {
-        top: 52%;
-        width: 115%;
-        max-width: 2000px;
+        top: 50%;
+        max-width: 1500px;
       }
     }
     
     @media (min-width: 1024px) {
       .header-train {
         top: 50%;
-        width: 120%;
-        max-width: 2200px;
+        max-width: 1700px;
+        width: 95%;
       }
     }
     
@@ -437,29 +408,29 @@
       display: block;
     }
     
-    /* Tekst LAETA MUNDUS - prawy środek (na żółtym) */
+    /* Tekst LAETA MUNDUS - prawy dolny róg (na żółtym) */
     .header-right-content {
       position: absolute;
-      top: 35%;
+      bottom: 120px;
       right: var(--gap);
-      max-width: 280px;
+      max-width: 300px;
       text-align: right;
       z-index: 10;
     }
     
     @media (min-width: 768px) {
       .header-right-content {
-        top: 30%;
+        bottom: 140px;
         right: 40px;
-        max-width: 320px;
+        max-width: 340px;
       }
     }
     
     @media (min-width: 1024px) {
       .header-right-content {
-        top: 25%;
+        bottom: 160px;
         right: 48px;
-        max-width: 360px;
+        max-width: 380px;
       }
     }
     
@@ -494,7 +465,7 @@
       padding: var(--gap);
       display: flex;
       flex-wrap: wrap;
-      justify-content: flex-start;
+      justify-content: flex-end;
       gap: 12px;
       z-index: 15;
     }
@@ -713,34 +684,6 @@
     
     .menu-nav .submenu a:hover {
       padding-left: 16px;
-    }
-    
-    .menu-social {
-      display: flex;
-      gap: 24px;
-      margin-top: 48px;
-      padding-top: 24px;
-      border-top: 1px solid var(--yellow);
-    }
-    
-    .menu-social a {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 40px;
-      height: 40px;
-      color: var(--yellow);
-      transition: opacity 0.2s ease;
-    }
-    
-    .menu-social a:hover {
-      opacity: 0.7;
-    }
-    
-    .menu-social img {
-      width: 24px;
-      height: 24px;
-      filter: brightness(0) saturate(100%) invert(79%) sepia(68%) saturate(1031%) hue-rotate(358deg) brightness(103%) contrast(104%);
     }
     
     /* ═══════════════════════════════════════════════════════════════
@@ -1084,24 +1027,7 @@
             <li><a href="#bilety-koncert">Na koncert</a></li>
           </ul>
         </li>
-        <li><a href="mailto:media@pwm.com.pl">Dla mediów</a></li>
       </ul>
-      <div class="menu-social">
-        <a href="https://facebook.com/pwmedition" target="_blank" aria-label="Facebook">
-          <img src="assets/facebook.png" alt="Facebook">
-        </a>
-        <a href="https://instagram.com/pwmedition" target="_blank" aria-label="Instagram">
-          <img src="assets/instagram.png" alt="Instagram">
-        </a>
-        <a href="https://x.com/pwmedition" target="_blank" aria-label="X">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-          </svg>
-        </a>
-        <a href="https://youtube.com/@pwmedition" target="_blank" aria-label="YouTube">
-          <img src="assets/youtube.png" alt="YouTube">
-        </a>
-      </div>
     </nav>
   </div>
 
@@ -1124,13 +1050,6 @@
             <img src="assets/logo-pwm.png" alt="PWM Edition" class="logo-pwm">
           </picture>
         </a>
-        <div class="logo-mkidn">
-          <svg class="logo-mkidn-img" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="40" height="40" fill="#DC143C"/>
-            <path d="M8 12h24v2H8zM8 18h24v2H8zM8 24h16v2H8z" fill="white"/>
-          </svg>
-          <span class="mkidn-text">Ministerstwo Kultury<br>i Dziedzictwa Narodowego</span>
-        </div>
       </div>
     </div>
     
@@ -1161,11 +1080,10 @@
       </div>
       
       <!-- Grafika pociągu - na przecięciu trójkątów -->
-      <!-- UWAGA: Zamień na pociag_wizuale_v3.webp gdy będzie dostępny -->
       <picture class="header-train">
-        <source srcset="assets/pociag.webp" type="image/webp">
-        <source srcset="assets/pociag.png" type="image/png">
-        <img src="assets/pociag.webp" alt="Pociąg PWM w RUCHU" loading="eager">
+        <source srcset="assets/pociag_wizuale_v3.webp" type="image/webp">
+        <source srcset="assets/pociag_wizuale_v3.png" type="image/png">
+        <img src="assets/pociag_wizuale_v3.webp" alt="Pociąg PWM w RUCHU" loading="eager">
       </picture>
       
       <!-- Info o koncercie - prawy dolny róg (na żółtym) -->
@@ -1190,10 +1108,6 @@
         <a href="#pwm" class="btn btn-gray">
           <span class="btn-label">więcej</span>
           <span class="btn-sublabel">o PWM</span>
-        </a>
-        <a href="#bilety-przejazd" class="btn btn-yellow">
-          <span class="btn-label">odbierz bilet</span>
-          <span class="btn-sublabel">na przejazd</span>
         </a>
       </div>
     </div>
@@ -1283,13 +1197,6 @@
           <p><strong>Będzie muzycznie!</strong></p>
         </div>
       </div>
-      
-      <!-- Grafika pociągu pod sekcją koncertów -->
-      <picture class="mt-48" style="display: block;">
-        <source srcset="assets/pociag.webp" type="image/webp">
-        <source srcset="assets/pociag.png" type="image/png">
-        <img src="assets/pociag.webp" alt="Pociąg PWM" class="img-fluid" loading="lazy">
-      </picture>
     </div>
     
     <!-- WAGONY PEŁNE MUZYKI -->
@@ -1329,18 +1236,6 @@
         </ul>
         
         <p class="mt-32"><strong>To nie wszystko!</strong></p>
-      </div>
-      
-      <!-- Przyciski -->
-      <div class="mt-48" style="display: flex; flex-wrap: wrap; gap: 12px;">
-        <a href="#bilety-przejazd" class="btn btn-yellow">
-          <span class="btn-label">odbierz bilet</span>
-          <span class="btn-sublabel">na pociąg</span>
-        </a>
-        <a href="#bilety-koncert" class="btn btn-gray">
-          <span class="btn-label">odbierz zaproszenie</span>
-          <span class="btn-sublabel">na koncert</span>
-        </a>
       </div>
     </div>
     
